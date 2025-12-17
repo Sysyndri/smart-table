@@ -14,7 +14,7 @@ import { initSorting } from './components/sorting.js';
 import { initFiltering } from './components/filtering.js';
 
 // Исходные данные используемые в render()
-const API = initData(sourceData);
+const API = initData();
 
 /**
  * Сбор и обработка полей из таблицы
@@ -45,7 +45,7 @@ async function render(action) {
     // result = applySorting(result, state, action);
     query = applyPagination(query, state, action); // обновляем query
 
-    const { total, items } = await api.getRecords(query); // запрашиваем данные с собранными параметрами
+    const { total, items } = await API.getRecords(query); // запрашиваем данные с собранными параметрами
 
     updatePagination(total, query); // перерисовываем пагинатор
     sampleTable.render(items);
@@ -68,7 +68,17 @@ const applySorting = initSorting([
 //     searchBySeller: indexes.sellers
 // });
 
-const {applyPagination, updatePagination} = initPagination();
+const {applyPagination, updatePagination} = initPagination(
+    sampleTable.pagination.elements,             // передаём сюда элементы пагинации, найденные в шаблоне
+    (el, page, isCurrent) => {                    // и колбэк, чтобы заполнять кнопки страниц данными
+        const input = el.querySelector('input');
+        const label = el.querySelector('span');
+        input.value = page;
+        input.checked = isCurrent;
+        label.textContent = page;
+        return el;
+    }
+);
 
     
 const appRoot = document.querySelector('#app');
