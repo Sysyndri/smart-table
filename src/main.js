@@ -12,6 +12,7 @@ import {initTable} from "./components/table.js";
 import { initPagination } from './components/pagination.js';
 import { initSorting } from './components/sorting.js';
 import { initFiltering } from './components/filtering.js';
+import { initSearching } from './components/searching.js';
 
 // Исходные данные используемые в render()
 const API = initData();
@@ -40,8 +41,8 @@ async function render(action) {
     let state = collectState(); // состояние полей из таблицы
     let query = {}; // здесь будут формироваться параметры запроса
     // другие apply*
-    // result = applySearching(result, state, action);
-    // result = applyFiltering(result, state, action);
+    query = applySearching(query, state, action);
+    query = applyFiltering(query, state, action);
     // result = applySorting(result, state, action);
     query = applyPagination(query, state, action); // обновляем query
 
@@ -64,9 +65,12 @@ const applySorting = initSorting([
     sampleTable.header.elements.sortByTotal
 ]);
 
-// const applyFiltering = initFiltering(sampleTable.filter.elements, {
-//     searchBySeller: indexes.sellers
-// });
+const {applyFiltering, updateIndexes} = initFiltering(
+    sampleTable.filter.elements, {
+    searchBySeller: await API.getIndexes()
+    }
+);
+
 
 const {applyPagination, updatePagination} = initPagination(
     sampleTable.pagination.elements,             // передаём сюда элементы пагинации, найденные в шаблоне
@@ -80,12 +84,18 @@ const {applyPagination, updatePagination} = initPagination(
     }
 );
 
+const applySearching = initSearching('search');
+
     
 const appRoot = document.querySelector('#app');
 appRoot.appendChild(sampleTable.container);
 
 async function init() {
     const indexes = await API.getIndexes()
+
+    updateIndexes(sampleTable.filter.elements, {
+        searchBySeller: indexes.sellers
+    });
 }
 
 init().then(render);

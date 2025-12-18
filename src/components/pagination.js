@@ -27,7 +27,7 @@ export const initPagination = ({pages, fromRow, toRow, totalRows}, createPage) =
     }
 
     const updatePagination = (total, { page, limit }) => {
-        pageCount = Math.ceil(total / limit);
+        pageCount = Math.ceil(total / page);
 
         
         // @todo: #2.4 — получить список видимых страниц и вывести их
@@ -39,8 +39,8 @@ export const initPagination = ({pages, fromRow, toRow, totalRows}, createPage) =
 
         // @todo: #2.5 — обновить статус пагинации
         fromRow.textContent = (page - 1) * limit + 1;
-        toRow.textContent = Math.min((page * limit), pageCount.length);
-        totalRows.textContent = pageCount.length;
+        toRow.textContent = Math.min((page * limit), total);
+        totalRows.textContent = total;
     }
 
     return {
