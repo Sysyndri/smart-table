@@ -31,7 +31,7 @@ export function initTable(settings, onAction) {
     })
 
     root.container.addEventListener('reset', (e) => {
-        setTimeout``(onAction);
+        setTimeout(onAction);
     })
 
     root.container.addEventListener('submit', (e) => {
@@ -58,6 +58,5 @@ export function initTable(settings, onAction) {
         }
         
     
-    // console.log( root.elements.rows)
     return {...root, render};
 }
